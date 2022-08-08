@@ -1,11 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "./App.css";
+import Description from "./Description";
+import NavigateToPage from "./NavigateToPage";
 
 function App() {
   const [entries, setEntries] = useState([]);
   const [noOfEntries, setNoOfEntries] = useState(50);
   const [currPage, setCurrPage] = useState(1);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -65,18 +68,6 @@ function App() {
     });
   }
 
-  function prevHandler() {
-    if (currPage > 1) {
-      setCurrPage(currPage - 1);
-    }
-  }
-
-  function nextHandler() {
-    if (currPage < noOfTotalPages) {
-      setCurrPage(currPage + 1);
-    }
-  }
-
   return (
     <>
       <h1>Discription</h1>
@@ -93,46 +84,52 @@ function App() {
           <option value="60">60</option>
           <option value="70">70</option>
         </select>
+        <input
+          type="text"
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
       </div>
       <table>
         <tbody>
-          {entries.map((entry) => {
-            if (entry.id < idxOfLastEntry) {
-              return idxOfFirstEntry <= entry.id ? (
-                <tr key={entry.id}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      onChange={(e) => editEnabled(e, entry)}
+          {search === ""
+            ? entries.map((entry) => {
+                if (entry.id < idxOfLastEntry) {
+                  return idxOfFirstEntry <= entry.id ? (
+                    <Description
+                      key={entry.id}
+                      entry={entry}
+                      editEnabled={editEnabled}
+                      changeHandler={changeHandler}
                     />
-                  </td>
-                  <td
-                    contentEditable={entry.isEditable}
-                    onInput={(e) => changeHandler(e.target.innerText, entry.id)}
-                  >
-                    {entry.Description}
-                  </td>
-                </tr>
-              ) : null;
-            } else {
-              return null;
-            }
-          })}
+                  ) : null;
+                } else {
+                  return null;
+                }
+              })
+            : entries
+                .filter((entry) => {
+                  return entry.Description.indexOf(search) !== -1;
+                })
+                .map((entry) => (
+                  <Description
+                    key={entry.id}
+                    entry={entry}
+                    editEnabled={editEnabled}
+                    changeHandler={changeHandler}
+                  />
+                ))}
         </tbody>
       </table>
-      <div className="pages">
-        <span onClick={prevHandler}>Prev - </span>
-        {pages.map((page) => (
-          <span
-            key={page}
-            onClick={() => {
-              setCurrPage(page);
-            }}
-            className={currPage === page ? "active" : ""}
-          >{`${page} - `}</span>
-        ))}
-        <span onClick={nextHandler}>Next</span>
-      </div>
+      {search === "" ? (
+        <NavigateToPage
+          pages={pages}
+          currPage={currPage}
+          noOfTotalPages={noOfTotalPages}
+          setCurrPage={setCurrPage}
+        />
+      ) : null}
     </>
   );
 }
