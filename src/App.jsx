@@ -5,10 +5,10 @@ import Description from "./Description";
 import NavigateToPage from "./NavigateToPage";
 
 function App() {
-  const [entries, setEntries] = useState([]);
-  const [noOfEntries, setNoOfEntries] = useState(50);
-  const [currPage, setCurrPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [entries, setEntries] = useState([]);
+  const [currPage, setCurrPage] = useState(1);
+  const [noOfEntries, setNoOfEntries] = useState(50);
 
   useEffect(() => {
     (async () => {
@@ -30,43 +30,31 @@ function App() {
   const idxOfLastEntry = currPage * noOfEntries;
   const idxOfFirstEntry = idxOfLastEntry - noOfEntries;
 
-  function editEnabled(e, entry) {
-    let modifiedEntries = [];
+  const editEnabled = (e, entry) => {
     if (e.target.checked) {
-      modifiedEntries = entries.map((entryOne) => {
+      entries.forEach((entryOne) => {
         if (entryOne.id === entry.id) {
-          return {
-            Description: entry.Description,
-            isEditable: true,
-            id: entryOne.id,
-          };
-        } else {
-          return {
-            Description: entryOne.Description,
-            isEditable: false,
-            id: entryOne.id,
-          };
+          entryOne.Description = entry.Description;
+          entryOne.isEditable = true;
         }
       });
     } else {
-      modifiedEntries = entries.map((entryOne) => {
-        return {
-          Description: entryOne.Description,
-          isEditable: false,
-          id: entryOne.id,
-        };
+      entries.forEach((entryOne) => {
+        if (entryOne.id === entry.id) {
+          entryOne.isEditable = false;
+        }
       });
     }
-    setEntries([...modifiedEntries]);
-  }
+    setEntries([...entries]);
+  };
 
-  function changeHandler(text, id) {
+  const changeHandler = (text, id) => {
     entries.forEach((entry) => {
       if (entry.id === id) {
         entry.Description = text;
       }
     });
-  }
+  };
 
   return (
     <>
@@ -95,18 +83,17 @@ function App() {
         <tbody>
           {search === ""
             ? entries.map((entry) => {
-                if (entry.id < idxOfLastEntry) {
-                  return idxOfFirstEntry <= entry.id ? (
+                if (idxOfFirstEntry <= entry.id && entry.id < idxOfLastEntry) {
+                  return (
                     <Description
                       key={entry.id}
                       entry={entry}
                       editEnabled={editEnabled}
                       changeHandler={changeHandler}
                     />
-                  ) : null;
-                } else {
-                  return null;
+                  );
                 }
+                return null;
               })
             : entries
                 .filter((entry) => {

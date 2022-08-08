@@ -16,6 +16,9 @@ tbody {
 tr td {
   padding: 10px;
 }
+.pages {
+  margin-bottom: 30px;
+}
 span {
   cursor: pointer;
   -webkit-user-select: none;

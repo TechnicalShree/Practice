@@ -6,6 +6,7 @@ export default function Description(props) {
       <td>
         <input
           type="checkbox"
+          checked={props.entry.isEditable}
           onChange={(e) => props.editEnabled(e, props.entry)}
         />
       </td>
