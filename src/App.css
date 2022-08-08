@@ -19,6 +19,7 @@ tr td {
 span {
   cursor: pointer;
   -webkit-user-select: none;
+  user-select: none;
 }
 .active {
   font-size: 1.2rem;
