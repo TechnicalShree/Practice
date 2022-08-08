@@ -16,3 +16,11 @@ tbody {
 tr td {
   padding: 10px;
 }
+span {
+  cursor: pointer;
+  -webkit-user-select: none;
+}
+.active {
+  font-size: 1.2rem;
+  color: purple;
+}
