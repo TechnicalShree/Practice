@@ -9,6 +9,8 @@ function App() {
     setTodos(...todos, todo);
   };
 
+  // this was the test
+
   return (
     <div>
       <div className="todo">
